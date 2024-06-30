@@ -20,7 +20,6 @@ class AuthController extends Controller
       'password' => 'required|string|min:6|confirmed',
       'phone' => 'required|string|max:15',
       'address' => 'required|string|max:255',
-      'role' => 'required|in:client,employee,admin',
     ]);
 
     if ($validator->fails()) {
@@ -33,7 +32,7 @@ class AuthController extends Controller
       'password' => Hash::make($request->password),
       'phone' => $request->phone,
       'address' => $request->address,
-      'role' => $request->role,
+      'role' => 'client',
     ]);
 
     $token = JWTAuth::fromUser($user);
@@ -68,6 +67,16 @@ class AuthController extends Controller
 
   public function getUser()
   {
-    return response()->json([User::all()]);
+    try {
+      $user = JWTAuth::parseToken()->authenticate();
+
+      if (!$user) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+      }
+
+      return response()->json(compact('user'));
+    } catch (\Throwable $th) {
+      return response()->json(['error' => 'Unauthorized'], 401);
+    }
   }
 }
