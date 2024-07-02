@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CarController;
+use App\Http\Controllers\Api\CarManagementController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AuthController;
@@ -32,4 +33,8 @@ Route::middleware(['auth:api'])->group(function () {
   Route::put('/cars/update/{id}', [CarController::class, 'update']);
   Route::post('/cars/uploadPhoto/{id}', [CarController::class, 'uploadPhoto']);
   Route::delete('/cars/delete/{id}', [CarController::class, 'destroy']);
+
+  //? Gestão Carros
+  Route::get('/cars-management', [CarManagementController::class, 'index']);
+  Route::put('/cars-management/update-status/{id}', [CarManagementController::class, 'updateStatus']);
 });

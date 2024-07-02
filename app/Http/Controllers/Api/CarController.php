@@ -52,7 +52,7 @@ class CarController extends Controller
       'year' => 'sometimes|integer|min:1900|max:' . date('Y'),
       'color' => 'sometimes|string|max:255',
       'daily_price' => 'sometimes|numeric',
-      'status' => 'sometimes|string|max:50',
+      'status' => 'sometimes|string|max:50|in:in revision,rented,reserved,available',
       'company_id' => 'sometimes|exists:companies,id'
     ]);
 
