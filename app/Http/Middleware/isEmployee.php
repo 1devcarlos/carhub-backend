@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsEmployee
+class isEmployee
 {
   /**
    * Handle an incoming request.
@@ -15,8 +15,8 @@ class IsEmployee
    */
   public function handle(Request $request, Closure $next): Response
   {
-    if (auth()->user()->role !== 'employee') {
-      return response()->json('You do not have permission to acess.', 403);
+    if ($request->user()->role !== 'employee') {
+      return response()->json('You do not have permission to access.', 403);
     }
     return $next($request);
   }

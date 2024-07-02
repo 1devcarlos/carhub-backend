@@ -7,19 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-        'company_name', 'address', 'phone', 'email'
-    ];
+  protected $fillable = [
+    'company_name', 'address', 'phone', 'email'
+  ];
 
-    public function cars()
-    {
-        return $this->hasMany(Car::class);
-    }
+  public function cars()
+  {
+    return $this->hasMany(Car::class);
+  }
 
-    public function pickupDeliveryPoints()
-    {
-        return $this->hasMany(PickupDeliveryPoint::class);
-    }
+  public function pickupDeliveryPoints()
+  {
+    return $this->hasMany(PickupDeliveryPoint::class);
+  }
 }

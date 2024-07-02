@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
@@ -19,17 +19,8 @@ Route::middleware(['auth:api'])->group(function () {
   Route::put('/profile/update', [UserController::class, 'update']);
   Route::post('/profile/image', [UserController::class, 'uploadPhoto']);
 
-  Route::middleware(['isAdmin'])->group(function () {
-    Route::get('/admin', function () {
-      //fallback de admin.
-      return "Usuário Admin";
-    });
-  });
-
-  Route::middleware(['isEmployee'])->group(function () {
-    Route::get('/employee', function () {
-      //fallback de funcionário.
-      return "Funcionário";
-    });
-  });
+  Route::get('/company', [CompanyController::class, 'index']);
+  Route::post('/company/create', [CompanyController::class, 'store']);
+  Route::put('/company/update/{id}', [CompanyController::class, 'update']);
+  Route::delete('/company/delete/{id}', [CompanyController::class, 'destroy']);
 });
