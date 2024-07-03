@@ -16,7 +16,7 @@ class Authenticate
    */
   public function handle(Request $request, Closure $next): Response
   {
-    if (Auth::guard('api')->check()) {
+    if (Auth::guard('api')->check() == true) {
       return $next($request);
     }
 

@@ -21,6 +21,8 @@ return new class extends Migration
       $table->binary('photo')->nullable()->after('address')->comment('Photo of the car');
       $table->enum('status', ['available', 'rented', 'reserved', 'in revision']);
       $table->foreignId('company_id')->constrained('companies');
+      $table->unsignedBigInteger('reserved_by')->nullable();
+      $table->foreign('reserved_by')->references('id')->on('users')->onDelete('cascade');
       $table->timestamps(0);
     });
   }

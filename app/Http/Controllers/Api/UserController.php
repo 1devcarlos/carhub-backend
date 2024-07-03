@@ -9,13 +9,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
   public function show()
   {
-    $user = JWTAuth::parseToken()->authenticate();
+    $authUser = Auth::guard('api')->user();
+    $userId = $authUser->id;
+
+    $user = User::find($userId);
 
     if (!$user) {
       return response()->json(['error' => 'User not found'], 404);
@@ -26,29 +28,22 @@ class UserController extends Controller
 
   public function update(Request $request)
   {
-    $authUser = JWTAuth::parseToken()->authenticate();
-
+    $authUser = Auth::guard('api')->user();
     $userId = $authUser->id;
 
     $user = User::find($userId);
 
-    if (!$user) {
-      return response()->json(['error' => 'User not found'], 404);
-    }
-
     $validator = Validator::make($request->all(), [
       'password' => 'sometimes|string|min:6|confirmed',
-      'email' => 'sometimes|string|email|max:255|unique:users,email' . $userId,
+      'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
       'phone' => 'sometimes|string|max:15',
       'address' => 'sometimes|string|max:255',
-      'photo' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048', //2mb por img no max.
     ]);
 
     if ($validator->fails()) {
       return response()->json($validator->errors(), 422);
     }
 
-    //Verifica se password está nos campos que serão atualizados, caso esteja, cria a necessidade do campo 'old_password'.
     if ($request->filled('password')) {
       $oldPassword = $request->input('old_password');
 
@@ -75,7 +70,6 @@ class UserController extends Controller
       $user->address = $request->address;
     }
 
-
     try {
       $user->save();
       $message = 'Successfully updated user profile!';
@@ -87,14 +81,10 @@ class UserController extends Controller
 
   public function uploadPhoto(Request $request)
   {
-    $authUser = JWTAuth::parseToken()->authenticate();
+    $authUser = Auth::guard('api')->user();
     $userId = $authUser->id;
 
     $user = User::find($userId);
-
-    if (!$user) {
-      return response()->json(['error' => 'User not found'], 404);
-    }
 
     $validator = Validator::make($request->all(), [
       'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB

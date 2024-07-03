@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\PickupDeliveryPoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -35,7 +36,12 @@ class CompanyController extends Controller
       'email' => $request->email,
     ]);
 
-    return response()->json(compact('company'), 201);
+    $pickupDeliveryPoint = PickupDeliveryPoint::create([
+      'address' => $request->address,
+      'company_id' => $company->id,
+    ]);
+
+    return response()->json(compact('company', 'pickupDeliveryPoint'), 201);
   }
 
   public function update(Request $request, $id)
@@ -60,6 +66,14 @@ class CompanyController extends Controller
     $company->fill($request->all());
     $company->save();
 
+    if ($request->has('address')) {
+      $pickupDeliveryPoint = PickupDeliveryPoint::where('company_id', $company->id)->first();
+      $company->address = $request->address;
+      $pickupDeliveryPoint->address = $request->address;
+      $pickupDeliveryPoint->save();
+    }
+
+
     return response()->json(compact('company'));
   }
 
@@ -71,6 +85,7 @@ class CompanyController extends Controller
       return response()->json(['error' => 'Company not found'], 404);
     }
 
+    $company->pickupDeliveryPoints()->delete();
     $company->delete();
 
     return response()->json(['message' => 'Company deleted sucessfully']);

@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class PickupDeliveryPoint extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-        'address', 'company_id'
-    ];
+  protected $fillable = [
+    'address', 'company_id'
+  ];
 
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
+  public function company()
+  {
+    return $this->belongsTo(Company::class);
+  }
 }

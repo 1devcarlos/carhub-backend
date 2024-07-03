@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Car;
+use App\Models\Revision;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,8 +17,8 @@ class CarManagementController extends Controller
     if ($request->has('status')) {
       $status = $request->query('status');
 
-      if ($status === 'revision') {
-        $cars = Car::where('status', 'revision')->get();
+      if ($status === 'in revision') {
+        $cars = Car::where('status', 'in revision')->with('revisions')->get();
       } elseif ($status === 'rented') {
         $cars = Car::where('status', 'rented')->with('rental')->get();
       } elseif ($status === 'reserved') {
@@ -44,12 +46,26 @@ class CarManagementController extends Controller
 
     $validator = Validator::make($request->all(), [
       'status' => 'required|string|in:in revision,rented,reserved,available',
+      'description' => 'required_if:status,in revision|string|max:255',
+      'end_date' => 'nullable|date|after_or_equal:start_date',
     ]);
 
     if ($validator->fails()) {
       return response()->json($validator->errors(), 422);
     }
 
+    // Se o status for "in revision", cria uma nova entrada de revisão
+    if ($request->input('status') === 'in revision') {
+      $startDate = Carbon::now(); // Obtém a data e hora atuais
+      $endDate = $request->input('end_date');
+
+      Revision::create([
+        'car_id' => $car->id,
+        'description' => $request->input('description'),
+        'start_date' => $startDate,
+        'end_date' => $endDate,
+      ]);
+    }
 
     $car->status = $request->input('status');
     $car->save();

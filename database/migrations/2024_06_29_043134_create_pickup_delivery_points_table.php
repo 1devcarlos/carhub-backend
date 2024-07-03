@@ -6,24 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('pickup_delivery_points', function (Blueprint $table) {
-            $table->id();
-            $table->string('address');
-            $table->foreignId('company_id')->constrained('companies');
-            $table->timestamps(0);
-        });
-    }
+  /**
+   * Run the migrations.
+   */
+  public function up(): void
+  {
+    Schema::create('pickup_delivery_points', function (Blueprint $table) {
+      $table->id();
+      $table->string('address');
+      $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+      $table->timestamps(0);
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('pickup_delivery_points');
-    }
+  /**
+   * Reverse the migrations.
+   */
+  public function down(): void
+  {
+    Schema::dropIfExists('pickup_delivery_points');
+  }
 };

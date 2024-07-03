@@ -11,15 +11,17 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('revisions', function (Blueprint $table) {
+    Schema::create('rentals', function (Blueprint $table) {
       $table->id();
       $table->unsignedBigInteger('car_id');
-      $table->text('description');
+      $table->unsignedBigInteger('user_id');
       $table->date('start_date');
-      $table->date('end_date')->nullable();
+      $table->date('end_date');
+      $table->decimal('total_price', 8, 2);
       $table->timestamps();
 
       $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');
+      $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
     });
   }
 
@@ -28,6 +30,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('revisions');
+    Schema::dropIfExists('locations');
   }
 };
