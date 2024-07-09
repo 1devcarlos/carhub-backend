@@ -7,10 +7,11 @@
   <title>@yield('title') - Carhub</title>
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+  @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 
-<body>
-  <main class="h-100 w-100 py-4">
+<body class="text-light" style="background-color: #121212;">
+  <main class=" w-100 py-4">
     @yield('content')
   </main>
 </body>
