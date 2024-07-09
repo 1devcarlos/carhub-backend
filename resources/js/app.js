@@ -1,1 +1,2 @@
-import './bootstrap';
+import "./bootstrap"; //Bootstrap do framework
+import "bootstrap"; //bootstrap lib
