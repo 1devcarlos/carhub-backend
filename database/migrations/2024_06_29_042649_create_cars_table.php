@@ -16,14 +16,17 @@ return new class extends Migration
       $table->string('brand');
       $table->string('model');
       $table->string('color');
-      $table->integer('year');
+      $table->year('year');
       $table->decimal('daily_price', 8, 2);
       $table->binary('photo')->nullable()->after('address')->comment('Photo of the car');
       $table->enum('status', ['available', 'rented', 'reserved', 'in revision']);
-      $table->foreignId('company_id')->constrained('companies');
+
+      $table->unsignedBigInteger('company_id');
       $table->unsignedBigInteger('reserved_by')->nullable();
+      $table->timestamps();
+
+      $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
       $table->foreign('reserved_by')->references('id')->on('users')->onDelete('cascade');
-      $table->timestamps(0);
     });
   }
 
